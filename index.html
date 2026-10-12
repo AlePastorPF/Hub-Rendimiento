@@ -1,3 +1,8 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HUB Rendimiento</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1087,7 +1092,7 @@ function logoImg(r,sz=20){const s=logoSrc(r);return s?`<img class="lg" src="${s}
 /* ================= Índice ERU ================= */
 const ERU_M=[['min','Duración','min',1],['dexp','Dist Exp','m',0],['rhie','RHIE','bouts',0],['big','BiG','s',2],['cont','Contactos','n',0]];
 const ERU_COL=['var(--e1)','var(--e2)','var(--e3)','var(--e4)','var(--e5)'];
-const W0={G1:[10,20,20,25,25],G2:[10,20,15,25,30],G3:[20,20,25,15,10],G4:[20,25,25,15,15],G5:[20,35,25,10,10]};
+const W0={G1:[10,20,20,25,25],G2:[10,20,15,25,30],G3:[20,30,25,15,10],G4:[20,25,25,15,15],G5:[20,35,25,10,10]};
 let ERUW=JSON.parse(JSON.stringify(W0));
 const ERU_CAP=3,BIG_FLOOR=.5;
 let ERUC=null;
@@ -1130,7 +1135,7 @@ function vERU(){
  if(!DB.gps.length&&!DB.train.length)return empty('GPS para el Índice ERU');
  if(!ERUC)eruCompute();
  const t=UI.eruType;const ctrls=`<div class="fld"><label>Actividad</label>${segH('eruType',t,[['P','Partidos'],['E','Entrenamientos']])}</div>`;
- const H=head('Rendimiento compuesto','Índice ERU',`Combina Duración, Dist Exp, RHIE, BiG y Contactos de cada registro con pesos según el grupo posicional. <b>ERU (UA)</b>: 100 = registro promedio del plantel en esa temporada y tipo de actividad (referencia estacional estable, comparable entre puestos). <b>% máximo propio</b>: respecto del mejor partido del mismo jugador en la temporada. <b>% máximo posición</b>: respecto del mejor partido de su grupo posicional en la temporada. Los dos máximos salen de los partidos de la temporada/s, equipo y minutos elegidos (${esc(eruCtx().label)}); no cambian al filtrar jugador, puesto, grupo, rival, partido o resultado. En Entrenamientos el índice usa la referencia de partido y puede superar 100%.`,ctrls,t==='P'?scopeText():scopeText(false).replace(/ · (Primera|Intermedia|Primera e Intermedia)/,''));
+ const H=head('Rendimiento compuesto','Índice de Esfuerzos Rugby Union (ERU)',`El Índice de Esfuerzos Rugby Union (ERU) combina Duración, Dist Exp, RHIE, BiG y Contactos de cada registro con pesos según el grupo posicional. <b>ERU (UA)</b>: 100 = registro promedio del plantel en esa temporada y tipo de actividad (referencia estacional estable, comparable entre puestos). <b>% máximo propio</b>: respecto del mejor partido del mismo jugador en la temporada. <b>% máximo posición</b>: respecto del mejor partido de su grupo posicional en la temporada. Los dos máximos salen de los partidos de la temporada/s, equipo y minutos elegidos (${esc(eruCtx().label)}); no cambian al filtrar jugador, puesto, grupo, rival, partido o resultado. En Entrenamientos el índice usa la referencia de partido y puede superar 100%.`,ctrls,t==='P'?scopeText():scopeText(false).replace(/ · (Primera|Intermedia|Primera e Intermedia)/,''));
  let rows=eruRows();if(!rows.length)return H+empty('registros para el Índice ERU');
  const q=normTxt(UI.eruQ||'');const sortK=UI.eruSort;
  const seasonsIn=[...new Set(rows.map(r=>r.season))].sort();
@@ -1165,7 +1170,7 @@ function vERU(){
 function vDatos(){
  const qa=DB._qa||{};const c=qa.carga||{},b=qa.bip||{},n=qa.nutri||{},w=qa.well||{};if(!ERUC)eruCompute();
  const rng=a=>a.length?`${fDate(a.reduce((x,y)=>x<y?x:y))} – ${fDate(a.reduce((x,y)=>x>y?x:y))}`:'–';
- let h=head('Fuentes, validación y cálculos','Datos y método','Cómo se leen las planillas, qué controles se aplican, cómo se calcula el Índice ERU y qué limitaciones tienen los datos. Los archivos originales no se modifican: las transformaciones se aplican al leerlos.','','Toda la base');
+ let h=head('Fuentes, validación y cálculos','Datos y método','Cómo se leen las planillas, qué controles se aplican, cómo se calcula el Índice de Esfuerzos Rugby Union (ERU) y qué limitaciones tienen los datos. Los archivos originales no se modifican: las transformaciones se aplican al leerlos.','','Toda la base');
  h+=`<section class="panel"><div class="ph"><div class="t"><h2>Actualización de los datos</h2><span class="sub">Los datos solo se actualizan desde el repositorio de GitHub: al subir una planilla nueva a <code>planillas/</code>, GitHub vuelve a procesar todo, cifra los datos y publica el sitio. Última publicación: ${DB._meta?.built?fDate(DB._meta.built):'–'}${DB._meta?.archivos?` · planillas: ${DB._meta.archivos.map(esc).join(', ')}`:''}.</span></div></div></section>`;
  h+=`<section class="panel"><div class="ph"><div class="t"><h2>Fuentes</h2></div></div><div class="scroll"><table class="t"><thead><tr><th class="l">Planilla</th><th class="l">Contenido usado</th><th>Registros</th><th>Jugadores</th><th>Período</th></tr></thead><tbody>
  <tr><td class="l nm">SIC_Carga · hoja GPS</td><td class="l">Partidos (sesión completa y por tiempo) y entrenamientos (fila “Session” por actividad)</td><td>${fmt(DB.gps.filter(r=>r.per==='S').length,0)} de partido · ${fmt(DB.train.length,0)} de entrenamiento</td><td>${new Set(DB.gps.map(r=>r.pid).concat(DB.train.map(r=>r.pid))).size}</td><td>${rng(DB.matches.map(m=>m.date).filter(Boolean).concat(DB.train.map(t=>t.date)))}</td></tr>
@@ -1182,7 +1187,7 @@ function vDatos(){
  ${row('Nombres entre planillas','–','Se emparejan sin tildes ni mayúsculas, con orden de palabras indistinto, admitiendo un apellido de más o de menos y hasta 2 letras de diferencia (p. ej. “Estanilao” = “Estanislao”).')}
  ${row('Temporada','0 discrepancias','La columna Temporada coincide con el año de la fecha en todos los registros.')}
  </tbody></table></div></section>`;
- h+=`<section class="panel"><div class="ph"><div class="t"><h2>Definiciones de las métricas del ERU</h2></div></div><ul class="bullets">
+ h+=`<section class="panel"><div class="ph"><div class="t"><h2>Definiciones de las métricas del Índice de Esfuerzos Rugby Union (ERU)</h2></div></div><ul class="bullets">
  <li>${lvlPill('n','Duración')}<span>Columna “Duracion (min)”: minutos del registro (partido completo o sesión). Dirección directa.</span></li>
  <li>${lvlPill('n','Dist Exp')}<span>Columna “Dist Exp”, en metros. Dirección directa.</span></li>
  <li>${lvlPill('n','RHIE')}<span>Columna “RHIE Total Bouts”: bloques de esfuerzos repetidos de alta intensidad. Dirección directa.</span></li>
@@ -1190,7 +1195,7 @@ function vDatos(){
  <li>${lvlPill('n','Contactos')}<span>Columna “Contactos”, cantidad. Dirección directa.</span></li></ul></section>`;
  // método ERU
  const wrow=g=>{const ws=ERUW[g];const sw=sum(ws);return `<tr><td class="l nm">${ERUG[g]}</td>${ws.map(x=>`<td>${fmt(x,0)}</td>`).join('')}<td><b>${sw}%</b>${Math.abs(sw-100)>.01?` ${lvlPill('y','se normaliza')}`:''}</td><td class="mono">${ws.map(x=>fmt(sw?x/sw*100:0,1)).join(' · ')}</td></tr>`};
- h+=`<section class="panel"><div class="ph"><div class="t"><h2>Cálculo del Índice ERU</h2><span class="sub">Se calcula para cada registro (jugador en un partido o en una sesión de entrenamiento), por separado para partidos y entrenamientos.</span></div></div>
+ h+=`<section class="panel"><div class="ph"><div class="t"><h2>Cálculo del Índice de Esfuerzos Rugby Union (ERU)</h2><span class="sub">Se calcula para cada registro (jugador en un partido o en una sesión de entrenamiento), por separado para partidos y entrenamientos.</span></div></div>
  <ol class="steps"><li><b>Grupo posicional</b> según el puesto registrado en esa actividad (si falta, el puesto habitual del jugador): pilares y hooker → Primera línea; 2ª y 3ª línea → Segunda / tercera línea; medio scrum; apertura y centros → Backs internos; wings y fullback → Backs externos.</li>
  <li><b>Referencia estacional estable</b>: para cada temporada, la media de cada métrica con <b>todos</b> los partidos válidos del plantel (no cambia al filtrar jugadores). Los entrenamientos se normalizan con esa misma referencia de partido. En BiG se excluyen los registros sin eventos.</li>
  <li><b>Normalización</b>: métricas directas = valor ÷ referencia; BiG = referencia ÷ valor (con un mínimo de ${BIG_FLOOR} s para evitar divisiones extremas). Cada valor normalizado se limita a ${ERU_CAP} (3 veces la referencia) para que un extremo no domine el índice. Un 0 real (p. ej. 0 contactos) puntúa 0; un dato faltante no se convierte en 0: su peso se reparte proporcionalmente entre las métricas disponibles.</li>
@@ -1198,7 +1203,7 @@ function vDatos(){
  <li><b>% máximo propio</b> = ERU del registro ÷ mejor ERU del mismo jugador <b>en partido</b> dentro de la temporada/s, equipo y minutos elegidos × 100. Su mejor partido de esa selección vale 100%. Si no tiene partidos en ella, queda sin dato.</li>
  <li><b>% máximo posición</b> = ERU del registro ÷ mejor ERU de su grupo posicional <b>en partido</b> dentro de la temporada/s, equipo y minutos elegidos × 100. En entrenamientos, el ERU se calcula con la referencia de partido de la temporada para que ambos porcentajes sean comparables (pueden superar 100%). El percentil ordena el registro dentro de ese grupo. Los dos máximos se toman del universo completo de la temporada.</li></ol>
  <div class="scroll"><table class="t"><thead><tr><th class="l">Grupo</th>${ERU_M.map(m=>`<th>${m[1]} %</th>`).join('')}<th>Suma declarada</th><th>Pesos efectivos</th></tr></thead><tbody>${Object.keys(ERUG).map(wrow).join('')}</tbody></table></div>
- <p class="note">Medio scrum suma 90% en la tabla original. Se mantienen los pesos declarados y se normalizan dividiendo por la suma (equivale a dividir por 0,90), para no penalizar un 10% a ese grupo. Los pesos se definen en el archivo <code>config/ajustes.json</code> del repositorio de GitHub.</p>
+ <p class="note">Los cinco grupos suman 100%. Medio scrum se corrigió a Duración 20%, Dist Exp 30%, RHIE 25%, BiG 15% y Contactos 10% (antes sumaba 90%). Si en el futuro un grupo no suma 100%, sus pesos se normalizan dividiendo por la suma. Los pesos se definen en el archivo <code>config/ajustes.json</code> del repositorio de GitHub.</p>
  <details><summary>Referencias estacionales usadas (${Object.keys(ERUC.rS).length} combinaciones temporada × actividad)</summary><div class="scroll"><table class="t"><thead><tr><th class="l">Temporada</th><th class="l">Actividad</th><th>Registros</th>${ERU_M.map(m=>`<th>${m[1]}<br><small>${m[2]}</small></th>`).join('')}<th>Máximo ERU</th></tr></thead><tbody>${Object.entries(ERUC.rS).sort().map(([k,o])=>{const [s,t]=k.split('|');const mx=ERUC.mx[k];return `<tr><td class="l">${s}</td><td class="l">${t==='P'?'Partidos':'Entrenamientos'}</td><td>${o.n}</td>${ERU_M.map(([m,,,d])=>`<td>${fmt(o.ref[m],d+1)} <span class="note">n ${o.cnt[m]||0}</span></td>`).join('')}<td>${mx?fmt(mx.eru,1)+' · '+esc(mx.pid):'–'}</td></tr>`}).join('')}</tbody></table></div></details>
 </section>`;
  h+=`<section class="panel"><div class="ph"><div class="t"><h2>Validaciones automáticas</h2><span class="sub">Se recalculan cada vez que se abre esta sección, con los datos cargados.</span></div></div><div class="scroll"><table class="t"><thead><tr><th class="l">Control</th><th class="l">Resultado</th><th class="l">Detalle</th></tr></thead><tbody>${selfChecks().map(([t,o,d])=>`<tr><td class="l">${t}</td><td class="l">${lvlPill(o?'g':'r',o?'Correcto':'Revisar')}</td><td class="l" style="white-space:normal">${d}</td></tr>`).join('')}</tbody></table></div></section>`;
@@ -1207,6 +1212,8 @@ function vDatos(){
  <li>${lvlPill('n','Acceso')}<span>Ingreso con contraseña; datos cifrados (AES-256-GCM). Actualización solo desde GitHub: se quitaron la carga de planillas y la edición de resultados, pesos y objetivos en el navegador.</span></li><li>${lvlPill('n','Datos')}<span>Eliminación de filas duplicadas y de relleno al leer la planilla de carga; entrenamientos guardados por sesión y actividad (antes se sumaban por día).</span></li>
  <li>${lvlPill('n','Filtros')}<span>Todos los filtros son de selección múltiple, con búsqueda, “Seleccionar todos” y “Limpiar selección”. Nuevos filtros de Rival y Partido. El filtro de Resultado no se muestra ni se aplica en GPS.</span></li>
  <li>${lvlPill('n','GPS')}<span>Distancia semanal con el valor de cada semana, modo media por jugador o total del grupo y detalle de entrenamiento y partido en el tooltip.</span></li>
+ <li>${lvlPill('n','ERU')}<span>Ponderación de Medio scrum corregida: Dist Exp pasa de 20% a 30% y el grupo suma 100%.</span></li>
+ <li>${lvlPill('n','ERU')}<span>Nombre completo del índice: Índice de Esfuerzos Rugby Union (ERU).</span></li>
  <li>${lvlPill('n','ERU')}<span>Nuevo módulo Índice ERU: tarjetas de máximas prestaciones, scatter ERU vs duración, comparación entre grupos y tabla con búsqueda, orden y copia en CSV.</span></li>
  <li>${lvlPill('n','BiP')}<span>Valores y promedio (mm:ss) en “Pelota en juego por partido”, porcentajes en “Duración de las secuencias” y nuevo gráfico de tiempo en secuencias de más de 60 s, con logos.</span></li>
  <li>${lvlPill('n','Nutrición')}<span>Dona de composición corporal (5 componentes) por jugador o grupo y por fecha de evaluación; evolución del IM/O y de la sumatoria de pliegues.</span></li><li>${lvlPill('n','ERU')}<span>Mejor prestación por grupo posicional e índice partido a partido.</span></li><li>${lvlPill('n','Validación')}<span>Controles automáticos en esta sección.</span></li><li>${lvlPill('n','ERU')}<span>Corrección: los máximos propio y de posición se toman de los partidos de la temporada/s, equipo y minutos elegidos, para que el mejor partido visible de cada jugador sea 100% (antes podía ser un partido de Intermedia oculto por el filtro de equipo). Los máximos se toman siempre de partidos; los entrenamientos se calculan con la referencia de partido. Antes: el % del máximo pasa a ser respecto del máximo propio de cada jugador, y el ERU de grupo se reemplaza por el % del máximo de la posición (grupo posicional).</span></li>
