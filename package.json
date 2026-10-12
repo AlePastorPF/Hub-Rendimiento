@@ -1,0 +1,12 @@
+{
+  "name": "hub-rendimiento-sic",
+  "version": "1.0.0",
+  "private": true,
+  "description": "HUB Rendimiento · San Isidro Club",
+  "scripts": {
+    "build": "node build.js"
+  },
+  "dependencies": {
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
+  }
+}

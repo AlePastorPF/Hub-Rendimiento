@@ -1,0 +1,11 @@
+{
+  "_ayuda": "Pesos del Índice ERU en %, en este orden: Duración, Dist Exp, RHIE, BiG, Contactos. Si un grupo no suma 100, se normaliza. objetivosPliegues: Σ pliegues objetivo (mm) por puesto; si se deja vacío {} se usa la mediana de cada puesto. Puestos: PL Pilar, HK Hooker, SL 2ª línea, BR 3ª línea, SH Medio scrum, FH Apertura, CE Centro, WG Wing, FB Fullback.",
+  "pesosERU": {
+    "G1": [10, 20, 20, 25, 25],
+    "G2": [10, 20, 15, 25, 30],
+    "G3": [20, 20, 25, 15, 10],
+    "G4": [20, 25, 25, 15, 15],
+    "G5": [20, 35, 25, 10, 10]
+  },
+  "objetivosPliegues": {}
+}
